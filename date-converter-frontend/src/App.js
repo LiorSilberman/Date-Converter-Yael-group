@@ -26,6 +26,10 @@ function App() {
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
+      if (!startDate) {
+        console.error('No date selected');
+        return;
+      }
     const year = startDate.getFullYear();
     const month = startDate.getMonth() + 1;
     const day = startDate.getDate();
