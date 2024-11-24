@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS # type: ignore
 import requests
 
 app = Flask(__name__)
@@ -21,10 +21,17 @@ def convert_date():
 
     url = f"https://www.hebcal.com/converter?cfg=json&gy={year}&gm={month}&gd={day}&g2h=1"
 
-    response = requests.get(url)
-    data = response.json()
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
 
+    except ValueError as e:
+        # Handle JSON decoding errors
+        return jsonify({"error": "Error decoding JSON data from API", "details": str(e)}), 500
+    
     return jsonify(data)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
